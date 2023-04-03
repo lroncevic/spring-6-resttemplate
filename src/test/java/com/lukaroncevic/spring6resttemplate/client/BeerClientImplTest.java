@@ -28,8 +28,8 @@ class BeerClientImplTest {
                 .upc("123456")
                 .build();
 
-        BeerDTO savedDTO = beerClient.createBeer(newDto);
-        assertNotNull(savedDTO);
+        BeerDTO savedDto = beerClient.createBeer(newDto);
+        assertNotNull(savedDto);
     }
 
     @Test
