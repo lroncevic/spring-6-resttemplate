@@ -53,6 +53,28 @@ public class BeerClientMockTest {
     BeerDTO dto;
     String dtoJson;
 
+    @BeforeEach
+    void setUp() throws JsonProcessingException {
+
+        RestTemplate restTemplate = restTemplateBuilderConfigured.build();
+        server = MockRestServiceServer.bindTo(restTemplate).build();
+        when(mockRestTemplateBuilder.build()).thenReturn(restTemplate);
+        beerClient = new BeerClientImpl(mockRestTemplateBuilder);
+        dto = getBeerDto();
+        dtoJson = objectMapper.writeValueAsString(dto);
+    }
+
+    @Test
+    void deleteBeer() {
+        server.expect(method(HttpMethod.DELETE)).
+                andExpect(requestToUriTemplate(URL + BeerClientImpl.GET_BEER_BY_ID_PATH, dto.getId()))
+                .andRespond(withNoContent());
+
+        beerClient.deleteBeer(dto.getId());
+
+        server.verify();
+    }
+
     @Test
     void updateBeer() {
 
@@ -64,17 +86,6 @@ public class BeerClientMockTest {
 
         BeerDTO responseDTO = beerClient.updateBeer(dto);
         assertThat(responseDTO.getId()).isEqualTo(dto.getId());
-    }
-
-    @BeforeEach
-    void setUp() throws JsonProcessingException {
-
-        RestTemplate restTemplate = restTemplateBuilderConfigured.build();
-        server = MockRestServiceServer.bindTo(restTemplate).build();
-        when(mockRestTemplateBuilder.build()).thenReturn(restTemplate);
-        beerClient = new BeerClientImpl(mockRestTemplateBuilder);
-        dto = getBeerDto();
-        dtoJson = objectMapper.writeValueAsString(dto);
     }
 
     @Test
