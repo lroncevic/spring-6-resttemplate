@@ -1,15 +1,13 @@
 package com.lukaroncevic.spring6resttemplate.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.lukaroncevic.spring6resttemplate.model.BeerDTO;
+import com.lukaroncevic.spring6resttemplate.model.BeerDTOPageImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -24,21 +22,10 @@ public class BeerClientImpl implements BeerClient {
     public Page<BeerDTO> listBeers() {
         RestTemplate restTemplate = restTemplateBuilder.build();
 
-        ResponseEntity<String> stringResponseEntity =
-                restTemplate.getForEntity(BASE_URL + GET_BEER_PATH, String.class);
+        ResponseEntity<BeerDTOPageImpl> pageResponseEntity =
+                restTemplate.getForEntity(BASE_URL + GET_BEER_PATH, BeerDTOPageImpl.class);
 
-        ResponseEntity<Map> mapResponseEntity =
-                restTemplate.getForEntity(BASE_URL + GET_BEER_PATH, Map.class);
-
-        ResponseEntity<JsonNode> jsonResponseEntity =
-                restTemplate.getForEntity(BASE_URL + GET_BEER_PATH, JsonNode.class);
-
-        jsonResponseEntity.getBody().findPath("content")
-                .elements().forEachRemaining(jsonNode -> {
-                    System.out.println(jsonNode.get("beerName").asText());
-                });
-
-        System.out.println(stringResponseEntity.getBody());
         return null;
+
     }
 }
